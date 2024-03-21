@@ -1,10 +1,9 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-
 import { connectToDatabase } from '@/lib/database'  
-import { ProductCategory } from '@/lib/database/models/category.model'
 import Product from '../database/models/product.model'
+import { ProductCategory } from '@/lib/database/models/category.model'
 import { handleError } from '@/lib/utils'
 import { 
     CreateProductsParams, 
@@ -66,7 +65,7 @@ export async function deleteProduct({ productId, path }: DeleteProductParams) {
     }
 }
 
-// GET ONE EVENT BY ID
+// GET ONE PRODUCT BY ID
 export async function getProductById(productId: string) {
     try {
       await connectToDatabase()

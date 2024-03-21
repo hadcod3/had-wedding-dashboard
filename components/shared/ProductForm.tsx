@@ -12,7 +12,6 @@ import { FileUploader } from "./FileUploader"
 import { useState } from "react"
 import Image from "next/image"
 import { useUploadThing } from '@/lib/uploadthing'
-import "react-datepicker/dist/react-datepicker.css";
 import { useRouter } from "next/navigation"
 import { IProduct } from "@/lib/database/models/product.model"
 import { createProduct, updateProduct } from "@/lib/actions/product.actions"

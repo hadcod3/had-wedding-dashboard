@@ -7,48 +7,52 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input"
 import { packetFormSchema } from "@/lib/validator"
 import * as z from 'zod'
-import { packetDefaultValues } from "@/constants"
-import Dropdown from "./Dropdown"
 import { Textarea } from "@/components/ui/textarea"
 import { FileUploader } from "./FileUploader"
 import { useState } from "react"
 import Image from "next/image"
 import { useUploadThing } from '@/lib/uploadthing'
 import { useRouter } from "next/navigation"
-import { createPacket, updatePacket } from "@/lib/actions/packet.actions"
 import { IPacket } from "@/lib/database/models/packet.model"
+import { createPacket, updatePacket } from "@/lib/actions/packet.actions"
+import { packetDefaultValues } from "@/constants"
+import Dropdown from "./Dropdown"
 
 
 type PacketFormProps = {
   type: "Create" | "Update";
-  packet?: IPacket[];
+  packet?: IPacket;
   packetId?: string;
 }
 
 const PacketForm = ({ type, packet, packetId }: PacketFormProps) => {
-  const [files, setFiles] = useState<File[]>([])
-  const initialValues = (packet && type === 'Update') ? packetDefaultValues : undefined;
-  const router = useRouter();
-
-  const { startUpload } = useUploadThing('imageUploader')
-
-  const form = useForm<z.infer<typeof packetFormSchema>>({
-    resolver: zodResolver(packetFormSchema),
-    defaultValues: initialValues
-  })
- 
-  async function onSubmit(values: z.infer<typeof packetFormSchema>) {
-    let uploadedImageUrl = values.imageUrl;
-
-    if(files.length > 0) {
-      const uploadedImages = await startUpload(files)
-
-      if(!uploadedImages) {
-        return
-      }
-
-      uploadedImageUrl = uploadedImages[0].url
+    const [files, setFiles] = useState<File[]>([])
+    const initialValues = packet && type === 'Update'
+    ? { 
+        ...packet, 
     }
+    : packetDefaultValues;
+    const router = useRouter();
+
+    const { startUpload } = useUploadThing('imageUploader')
+
+    const form = useForm<z.infer<typeof packetFormSchema>>({
+        resolver: zodResolver(packetFormSchema),
+        defaultValues: initialValues
+    })
+ 
+    async function onSubmit(values: z.infer<typeof packetFormSchema>) {
+        let uploadedImageUrl = values.imageUrl;
+
+        if(files.length > 0) {
+        const uploadedImages = await startUpload(files)
+
+        if(!uploadedImages) {
+            return
+        }
+
+        uploadedImageUrl = uploadedImages[0].url
+        }
 
     if(type === 'Create') {
       try {

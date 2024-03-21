@@ -19,7 +19,6 @@ const getCategoryByName = async (name: string) => {
 
 const populatePacket = (query: any) => {
   return query
-    .populate({ path: 'category', model: PacketCategory, select: '_id name' })
 }
 
 // CREATE
@@ -27,7 +26,7 @@ export async function createPacket({ packet, path }: CreatePacketParams) {
   try {
     await connectToDatabase()
 
-    const newPacket = await Packet.create({ ...packet, category: packet.categoryId })
+    const newPacket = await Packet.create({ ...packet, category: packet.categoryId, path })
     revalidatePath(path)
 
     return JSON.parse(JSON.stringify(newPacket))
@@ -53,20 +52,20 @@ export async function getPacketById(packetId: string) {
 
 // UPDATE
 export async function updatePacket({ packet, path }: UpdatePacketParams) {
-  try {
-    await connectToDatabase()
+    try {
+        await connectToDatabase()
 
-    const updatedPacket = await Packet.findByIdAndUpdate(
-        packet._id,
-        { ...packet, category: packet.categoryId },
-        { new: true }
-    )
-    revalidatePath(path)
+        const updatedPacket = await Packet.findByIdAndUpdate(
+            packet._id,
+            { ...packet, path, category: packet.categoryId },
+            { new: true }
+        )
+        revalidatePath(path)
 
-    return JSON.parse(JSON.stringify(updatedPacket))
-  } catch (error) {
-    handleError(error)
-  }
+        return JSON.parse(JSON.stringify(updatedPacket))
+    } catch (error) {
+        handleError(error)
+    }
 }
 
 // DELETE
