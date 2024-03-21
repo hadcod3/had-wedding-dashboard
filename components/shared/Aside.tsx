@@ -2,8 +2,10 @@ import React from 'react'
 import AsideItems from './AsideItems'
 import Image from 'next/image'
 import Link from 'next/link'
+import { UserButton } from '@clerk/nextjs'
 
-function Aside() {
+const Aside = () => {
+
     return (
         <nav className='fixed w-14 h-screen py-4 left-4'>
             <div className='h-full flex flex-col items-center justify-between py-3 border-2 rounded-xl'>
@@ -16,14 +18,7 @@ function Aside() {
                     />
                 </Link>
                 <AsideItems/>
-                <Link href="/" className="flex items-center gap-5">
-                    <Image
-                        src="/assets/icons/ic_signout.png"
-                        alt="Had Wedding Logo"
-                        width={20}
-                        height={20}
-                    />
-                </Link>
+                <UserButton/>
             </div>
         </nav>
     )
