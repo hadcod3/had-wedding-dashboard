@@ -4,13 +4,13 @@ import { SearchParamProps } from '@/types'
 import Image from 'next/image';
 
 const PackageDetails = async ({ params: { id }, searchParams }: SearchParamProps) => {
-  const packet = await getPacketById(id);
+    const packet = await getPacketById(id);
 
-  const relatedPackets = await getRelatedPacketsByCategory({
-    categoryId: packet.category._id,
-    packetId: packet._id,
-    page: searchParams.page as string,
-  })
+    const relatedPackets = await getRelatedPacketsByCategory({
+        categoryId: packet.category._id,
+        packetId: packet._id,
+        page: searchParams.page as string,
+    })
 
   return (
     <>
@@ -52,15 +52,15 @@ const PackageDetails = async ({ params: { id }, searchParams }: SearchParamProps
     <section className="wrapper my-8 flex flex-col gap-8 md:gap-12">
       <h2 className="h2-bold">Related Packets</h2>
 
-      <PacketCollection 
-          data={relatedPackets?.data}
-          emptyTitle="No Packets Found"
-          emptyStateSubtext="Come back later"
-          collectionType="All_Packets"
-          limit={3}
-          page={searchParams.page as string}
-          totalPages={relatedPackets?.totalPages}
-        />
+        <PacketCollection 
+            data={relatedPackets?.data}
+            emptyTitle="No Packets Found"
+            emptyStateSubtext="Come back later"
+            collectionType="All_Packets"
+            limit={3}
+            page={searchParams.page as string}
+            totalPages={relatedPackets?.totalPages}
+            />
     </section>
     </>
   )
