@@ -192,7 +192,7 @@ export type UpdateGearsParams = {
     path: string
 }
 export type DeleteGearParams = {
-    productId: string
+    gearId: string
     path: string
 }
 export type GetAllGearsParams = {

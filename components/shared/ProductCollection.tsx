@@ -15,7 +15,7 @@ type ProductCollectionProps = {
   urlParamName?: string,
   collectionType?: 'All_Products' | 'Sample_Products'
 }
-
+ 
 const ProductCollection = ({
   data,
   emptyTitle,

@@ -7,6 +7,7 @@ import { GearCategory } from '@/lib/database/models/category.model'
 import { handleError } from '@/lib/utils'
 import { 
     CreateGearsParams, 
+    DeleteGearParams, 
     GetAllGearsParams, 
     UpdateGearsParams 
 } from '@/types'
@@ -48,6 +49,18 @@ export async function updateGear({ gear, path }: UpdateGearsParams) {
       return JSON.parse(JSON.stringify(updatedGear))
     } catch (error) {
       handleError(error)
+    }
+}
+
+// DELETE
+export async function deleteGear({ gearId, path }: DeleteGearParams) {
+    try {
+        await connectToDatabase()
+
+        const deletedGear = await Gear.findByIdAndDelete(gearId)
+        if (deletedGear) revalidatePath(path)
+    } catch (error) {
+        handleError(error)
     }
 }
 

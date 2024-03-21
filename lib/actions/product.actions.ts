@@ -8,6 +8,7 @@ import Product from '../database/models/product.model'
 import { handleError } from '@/lib/utils'
 import { 
     CreateProductsParams, 
+    DeleteProductParams, 
     GetAllProductsParams, 
     GetRelatedProductsByCategoryParams, 
     UpdateProductsParams 
@@ -50,6 +51,18 @@ export async function updateProduct({ product, path }: UpdateProductsParams) {
       return JSON.parse(JSON.stringify(updatedProduct))
     } catch (error) {
       handleError(error)
+    }
+}
+
+// DELETE
+export async function deleteProduct({ productId, path }: DeleteProductParams) {
+    try {
+        await connectToDatabase()
+
+        const deletedProduct = await Product.findByIdAndDelete(productId)
+        if (deletedProduct) revalidatePath(path)
+    } catch (error) {
+        handleError(error)
     }
 }
 

@@ -7,7 +7,7 @@ import { DeleteConfirmation } from './DeleteConfirmation'
 type CardProps = {
   item: IPacket
 }
-
+ 
 const PacketCard = ({ item }: CardProps) => {
 
   return (
@@ -22,7 +22,7 @@ const PacketCard = ({ item }: CardProps) => {
         <Link href={`/packets/${item._id}/update`}>
           <Image src="/assets/icons/edit.svg" alt="edit" width={20} height={20} />
         </Link>
-        <DeleteConfirmation itemId={item._id} />
+        <DeleteConfirmation itemId={item._id} deleteType='Packets'/>
       </div>
 
       <div className="flex min-h-[230px] flex-col gap-3 p-5 md:gap-4"> 

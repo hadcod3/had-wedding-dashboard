@@ -2,9 +2,9 @@ import PacketForm from "@/components/shared/PacketForm"
 import { getPacketById } from "@/lib/actions/packet.actions"
 
 type UpdatePacketProps = {
-  params: {
-    id: string
-  }
+    params: {
+        id: string
+    }
 }
 
 const UpdatePacket = async ({ params: { id } }: UpdatePacketProps) => {

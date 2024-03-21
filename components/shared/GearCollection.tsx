@@ -13,7 +13,7 @@ type GearCollectionProps = {
   page: number | string,
   totalPages?: number,
   urlParamName?: string,
-  collectionType?: 'All_Products' | 'Sample_Products'
+  collectionType?: 'All_Products' | 'Sample_Products' 
 }
 
 const ProductCollection = ({
