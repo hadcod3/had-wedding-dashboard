@@ -18,7 +18,7 @@ const getCategoryByName = async (name: string) => {
 } 
 
 const populateProduct = (query: any) => {
-    return query
+    return query.populate({ path: 'category', model: ProductCategory, select: '_id name' })
 }
 
 // CREATE

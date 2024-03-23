@@ -33,7 +33,7 @@ const PacketCollection = ({
             {data.map((item) => {
               return (
                 <li key={item._id} className="flex justify-center">
-                  <PacketCard item={item}/>
+                  <PacketCard event={item}/>
                 </li>
               )
             })}

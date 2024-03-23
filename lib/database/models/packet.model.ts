@@ -15,7 +15,7 @@ const PacketSchema = new Schema({
     description: { type: String },
     createdAt: { type: Date, default: Date.now },
     imageUrl: { type: String, required: true },
-    price: { type: String },
+    price: { type: String, required: true },
     category: { type: Schema.Types.ObjectId, ref: 'PacketCategory' },
 })
 
