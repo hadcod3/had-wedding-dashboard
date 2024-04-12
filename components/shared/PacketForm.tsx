@@ -18,7 +18,6 @@ import { createPacket, updatePacket } from "@/lib/actions/packet.actions"
 import { packetDefaultValues } from "@/constants"
 import Dropdown from "./Dropdown"
 
-
 type PacketFormProps = {
   type: "Create" | "Update";
   packet?: IPacket;

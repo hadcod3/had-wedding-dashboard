@@ -12,7 +12,12 @@ export const asideLinks = [
     {   
       label: 'Gears',
       route: '/gears',
-      ic: 'ic_product.png'
+      ic: 'ic_gear.png'
+    },
+    {   
+      label: 'Orders',
+      route: '/orders',
+      ic: 'ic_invoice.png'
     },
 ]
 

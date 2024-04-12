@@ -18,7 +18,9 @@ const Aside = () => {
                     />
                 </Link>
                 <AsideItems/>
-                <UserButton/>
+                <div className='w-8 h-8 flex items-center justify-center'>
+                    <UserButton/>
+                </div>
             </div>
         </nav>
     )

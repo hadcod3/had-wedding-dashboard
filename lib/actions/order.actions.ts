@@ -1,7 +1,7 @@
 "use server"
 
 import Stripe from 'stripe';
-import { CheckoutOrderParams, CreateOrderParams, GetOrdersByPacketParams, GetOrdersByUserParams } from "@/types"
+import { CheckoutOrderParams, CreateOrderParams, GetAllOrdersParams, GetOrdersByPacketParams, GetOrdersByUserParams } from "@/types"
 import { redirect } from 'next/navigation';
 import { handleError } from '../utils';
 import { connectToDatabase } from '../database';
@@ -23,15 +23,15 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
             currency: 'idr',
             unit_amount: price,
             product_data: {
-              name: order.packetTitle
+              name: order.item.name
             }
           },
           quantity: 1
         },
       ],
       metadata: {
-        packetId: order.packetId,
-        buyerId: order.buyerId,
+        packetId: order.item._id,
+        buyerId: order.buyer._id,
       },
       mode: 'payment',
       success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/`,
@@ -50,8 +50,8 @@ export const createOrder = async (order: CreateOrderParams) => {
     
     const newOrder = await Order.create({
       ...order,
-      packet: order.packetId,
-      buyer: order.buyerId,
+      packet: order.item._id,
+      buyer: order.buyer._id,
     });
 
     return JSON.parse(JSON.stringify(newOrder));
@@ -61,12 +61,12 @@ export const createOrder = async (order: CreateOrderParams) => {
 }
 
 // GET ORDERS BY PACKET
-export async function getOrdersByPacket({ searchString, packetId }: GetOrdersByPacketParams) {
+export async function getOrdersByPacket({ searchString, itemId }: GetOrdersByPacketParams) {
   try {
     await connectToDatabase()
 
-    if (!packetId) throw new Error('Packet ID is required')
-    const packetObjectId = new ObjectId(packetId)
+    if (!itemId) throw new Error('Packet ID is required')
+    const packetObjectId = new ObjectId(itemId)
 
     const orders = await Order.aggregate([
       {
@@ -74,7 +74,7 @@ export async function getOrdersByPacket({ searchString, packetId }: GetOrdersByP
           from: 'users',
           localField: 'buyer',
           foreignField: '_id',
-          as: 'tenant',
+          as: 'buyer',
         },
       },
       {
@@ -118,31 +118,63 @@ export async function getOrdersByPacket({ searchString, packetId }: GetOrdersByP
 
 // GET ORDERS BY USER
 export async function getOrdersByUser({ userId, limit = 3, page }: GetOrdersByUserParams) {
-  try {
-    await connectToDatabase()
+    try {
+        await connectToDatabase()
 
-    const skipAmount = (Number(page) - 1) * limit
-    const conditions = { buyer: userId }
+        const skipAmount = (Number(page) - 1) * limit
+        const conditions = { buyer: userId }
 
-    const orders = await Order.distinct('packet._id')
-      .find(conditions)
-      .sort({ createdAt: 'desc' })
-      .skip(skipAmount)
-      .limit(limit)
-      .populate({
-        path: 'packets',
-        model: Packet,
-        populate: {
-          path: 'organizer',
-          model: User,
-          select: '_id firstName lastName',
-        },
-      })
+        const orders = await Order.distinct('packet._id')
+        .find(conditions)
+        .sort({ createdAt: 'desc' })
+        .skip(skipAmount)
+        .limit(limit)
+        .populate({
+            path: 'packets',
+            model: Packet,
+            populate: {
+            path: 'organizer',
+            model: User,
+            select: '_id firstName lastName',
+            },
+        })
 
-    const ordersCount = await Order.distinct('packet._id').countDocuments(conditions)
+        const ordersCount = await Order.distinct('packet._id').countDocuments(conditions)
 
-    return { data: JSON.parse(JSON.stringify(orders)), totalPages: Math.ceil(ordersCount / limit) }
-  } catch (error) {
-    handleError(error)
-  }
+        return { data: JSON.parse(JSON.stringify(orders)), totalPages: Math.ceil(ordersCount / limit) }
+        } catch (error) {
+        handleError(error)
+    }
+}
+
+// GET ALL ORDERS
+export async function getAllOrders({ query, limit = 20, page } : GetAllOrdersParams) {
+    try {
+        await connectToDatabase()
+    
+        // const titleCondition = query ? { title: { $regex: query, $options: 'i' } } : {}
+        // const conditions = {
+        //     $and: [titleCondition],
+        // }
+        const conditions = query ? { title: { $regex: query, $options: 'i' } } : {};
+    
+        const skipAmount = (Number(page) - 1) * limit
+        // const orders = Order.find(conditions)
+        //     .sort({ createdAt: 'desc' })
+        //     .skip(skipAmount)
+        //     .limit(limit)
+        // const ordersCount = await Order.countDocuments(conditions)
+        const orders = await Order.find(conditions)
+            .sort({ createdAt: 'desc' })
+            .skip(skipAmount)
+            .limit(limit);
+        const ordersCount = await Order.countDocuments(conditions);
+    
+        return {
+            data: JSON.parse(JSON.stringify(orders)),
+            totalPages: Math.ceil(ordersCount / limit),
+        }
+    } catch (error) {
+        handleError(error)
+    }
 }

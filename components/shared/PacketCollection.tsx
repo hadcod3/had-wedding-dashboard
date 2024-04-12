@@ -16,7 +16,7 @@ type CollectionProps = {
   collectionType?: 'All_Packets' | 'Sample_Packets'
 }
  
-const PacketCollection = ({ 
+const PacketCollection = ({
   data,
   emptyTitle,
   emptyStateSubtext,
